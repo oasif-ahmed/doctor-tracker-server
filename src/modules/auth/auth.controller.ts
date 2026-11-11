@@ -10,18 +10,18 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
 
   // Set access token cookie
   res.cookie("accessToken", result.accessToken, {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: "lax",
-    maxAge: 15 * 60 * 1000,
-    path: "/",
+      httpOnly: true,
+		  secure: isProduction,
+		  sameSite: isProduction ? ("none" as const) : ("lax" as const),
+      maxAge: 15 * 60 * 1000,
+      path: "/",
   });
 
   // Set refresh token cookie
   res.cookie("refreshToken", result.refreshToken, {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: "lax",
+		  secure: isProduction,
+		  sameSite: isProduction ? ("none" as const) : ("lax" as const),
     maxAge: 7 * 24 * 60 * 60 * 1000,
     path: "/",
   });
@@ -44,8 +44,8 @@ const refreshAccessToken = catchAsync(
 
     res.cookie("accessToken", result.accessToken, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: "lax",
+		  secure: isProduction,
+		  sameSite: isProduction ? ("none" as const) : ("lax" as const),
       maxAge: 15 * 60 * 1000,
       path: "/",
     });
