@@ -11,7 +11,7 @@ const app: Application = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: "https://doctor-tracker-client-xi.vercel.app",
     credentials: true,
   })
 );
