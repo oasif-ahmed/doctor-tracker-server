@@ -6,25 +6,23 @@ import { catchAsync } from "../../utils/catchAsync";
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.loginUser(req.body);
 
-  const isProduction = false;
+  const isProduction = process.env.NODE_ENV === "production";
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? ("none" as const) : ("lax" as const),
+    maxAge: 15 * 60 * 1000,
+    path: "/",
+  };
+
 
   // Set access token cookie
-  res.cookie("accessToken", result.accessToken, {
-      httpOnly: true,
-		  secure: isProduction,
-		  sameSite: isProduction ? ("none" as const) : ("lax" as const),
-      maxAge: 15 * 60 * 1000,
-      path: "/",
-  });
+  // New unified cookie handling
+  res.cookie("accessToken", result.accessToken, cookieOptions);
+  // Set refresh token cookie (longer TTL)
+  res.cookie("refreshToken", result.refreshToken, { ...cookieOptions, maxAge: 7 * 24 * 60 * 60 * 1000 });
 
-  // Set refresh token cookie
-  res.cookie("refreshToken", result.refreshToken, {
-    httpOnly: true,
-		  secure: isProduction,
-		  sameSite: isProduction ? ("none" as const) : ("lax" as const),
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-    path: "/",
-  });
 
   res.status(200).json({
     success: true,
@@ -42,13 +40,16 @@ const refreshAccessToken = catchAsync(
 
     const isProduction = process.env.NODE_ENV === "production";
 
+
+
+
     res.cookie("accessToken", result.accessToken, {
-      httpOnly: true,
-		  secure: isProduction,
-		  sameSite: isProduction ? ("none" as const) : ("lax" as const),
-      maxAge: 15 * 60 * 1000,
-      path: "/",
-    });
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? ("none" as const) : ("lax" as const),
+    maxAge: 15 * 60 * 1000,
+    path: "/",
+  });
 
     res.status(200).json({
       success: true,
