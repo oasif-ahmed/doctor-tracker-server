@@ -6,7 +6,7 @@ import { catchAsync } from "../../utils/catchAsync";
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await authService.loginUser(req.body);
 
-  const isProduction = process.env.NODE_ENV === "production";
+  const isProduction = false;
 
   // Set access token cookie
   res.cookie("accessToken", result.accessToken, {
