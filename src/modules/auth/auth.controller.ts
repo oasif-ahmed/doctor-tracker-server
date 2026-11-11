@@ -58,7 +58,18 @@ const refreshAccessToken = catchAsync(
   }
 );
 
+
+// Get current authenticated user info
+const getMe = catchAsync(async (req: Request, res: Response) => {
+  // auth middleware attaches user to req
+  if (!req.user) {
+    return res.status(401).json({ success: false, statusCode: 401, message: 'Not authenticated' });
+  }
+  res.status(200).json({ success: true, statusCode: 200, data: req.user });
+});
+
 export const authController = {
   loginUser,
-  refreshAccessToken
+  refreshAccessToken,
+  getMe,
 };
